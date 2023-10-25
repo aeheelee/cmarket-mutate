@@ -1,15 +1,35 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { removeFromCart, setQuantity } from '../actions';
+import React, { useState, useEffect } from 'react'
 import CartItem from '../components/CartItem'
 import OrderSummary from '../components/OrderSummary'
+import { useItems } from '../query/Items';  // useItems 훅을 임포트합니다.
+import { useCartItems, useUpdateCartItem, useDeleteCartItem} from '../query/CartItems';  // useItems 훅을 임포트합니다.
 
 export default function ShoppingCart() {
 
-  const state = useSelector(state => state.itemReducer);
-  const { cartItems, items } = state
-  const dispatch = useDispatch();
-  const [checkedItems, setCheckedItems] = useState(cartItems.map((el) => el.itemId))
+  const {
+    data: items = null,
+    isLoading: isLoadingItems = true,
+    isError: isErrorItems = false,
+    error: errorItems = null
+  } = useItems();
+  
+  const {
+    data: cartItems = null,
+    isLoading: isLoadingCartItems = true,
+    isError: isErrorCartItems = false,
+    error: errorCartItems = null
+  } = useCartItems();
+
+  const updateCartItemsMutation = useUpdateCartItem();
+  const deleteCartItemsMutation = useDeleteCartItem(); 
+
+  const [checkedItems, setCheckedItems] = useState('');
+
+  useEffect(() => {
+    if (!isLoadingCartItems && !isErrorCartItems) {
+      setCheckedItems(cartItems.map((el) => el.itemId));
+    }
+  }, [isLoadingCartItems, isErrorCartItems, cartItems]);
 
   const handleCheckChange = (checked, id) => {
     if (checked) {
@@ -30,15 +50,19 @@ export default function ShoppingCart() {
   };
 
   const handleQuantityChange = (quantity, itemId) => {
-    //TODO: dispatch 함수를 호출하여 액션을 전달하세요.
+    //TODO: mutation 함수를 호출하여 정보를 업데이트 하세요.
   }
 
   const handleDelete = (itemId) => {
     setCheckedItems(checkedItems.filter((el) => el !== itemId))
-    //TODO: dispatch 함수를 호출하여 액션을 전달하세요.
+
+    //TODO: mutation 함수를 호출하여 항목을 삭제 하세요.
   }
 
   const getTotal = () => {
+
+    if (checkedItems.length <= 0) return 0;
+
     let cartIdArr = cartItems.map((el) => el.itemId)
     let total = {
       price: 0,
@@ -56,6 +80,17 @@ export default function ShoppingCart() {
     return total
   }
 
+  if (isLoadingItems || isLoadingCartItems) return <p>Loading...</p>;
+  if (isErrorItems || isErrorCartItems) {
+    return (
+      <div>
+        <p>Error...</p>
+        {isErrorItems && <p>{errorItems.message || 'An error occurred while fetching items.'}</p>}
+        {isErrorCartItems && <p>{errorCartItems.message || 'An error occurred while fetching cart items.'}</p>}
+      </div>
+    );
+  }
+   
   const renderItems = items.filter((el) => cartItems.map((el) => el.itemId).indexOf(el.id) > -1)
   const total = getTotal()
 

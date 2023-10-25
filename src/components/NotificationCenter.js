@@ -1,16 +1,14 @@
-import { useSelector } from 'react-redux';
 import Toast from './Toast';
+import { useToast } from '../query/Toast';
 
 function NofiticationCenter() {
-  const state = useSelector(state => state.notificationReducer);
-
-  return <div className="notification-container top-right">
-    {
-      state.notifications.map((n) =>
-        <Toast key={n.uuid} text={n.message} dismissTime={n.dismissTime} />
-      )
-    }
-  </div>
+  // 상태를 추적합니다.
+  const { data: toast } = useToast();
+  return (
+    <div className="notification-container top-right">
+      {toast?.message && <Toast key={Math.random()} text={toast.message} dismissTime={2000} />}
+    </div>
+  );
 }
 
-export default NofiticationCenter
+export default NofiticationCenter     

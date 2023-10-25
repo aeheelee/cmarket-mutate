@@ -1,10 +1,13 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useCartItems } from '../query/CartItems';  // useItems 훅을 임포트합니다.
 
 function Nav() {
-
-  const state = useSelector(state => state.itemReducer);
+  const {
+    data: cartItems = null,
+    isLoading: isLoadingCartItems = true,
+    isError: isErrorCartItems = false
+  } = useCartItems();
 
   return (
     <div id="nav-body">
@@ -15,7 +18,7 @@ function Nav() {
       <div id="menu">
         <Link to="/">상품리스트</Link>
         <Link to="/shoppingcart">
-          장바구니<span id="nav-item-counter">{state.cartItems.length}</span>
+            장바구니<span id="nav-item-counter">{(isLoadingCartItems || isErrorCartItems) ? 0 : cartItems.length}</span>
         </Link>
       </div>
     </div>
