@@ -29,6 +29,6 @@ const fetchItems = async (searchKeyword) => {
  * @returns 
  */
 export const useItems = (searchKeyword) => {
-  return useQuery('items', () => fetchItems(searchKeyword));
+  return useQuery(['items', searchKeyword], () => fetchItems(searchKeyword));
 };
 

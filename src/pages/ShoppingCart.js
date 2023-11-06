@@ -11,7 +11,7 @@ export default function ShoppingCart() {
     isLoading: isLoadingItems = true,
     isError: isErrorItems = false,
     error: errorItems = null
-  } = useItems();
+  } = useItems('');
   
   const {
     data: cartItems = null,
