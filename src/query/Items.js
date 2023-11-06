@@ -8,9 +8,15 @@ import axios from 'axios';
  * @returns 
  * 
  */
-const fetchItems = async () => {
+const fetchItems = async (searchKeyword) => {
   try {
-    const response = await axios.get('http://localhost:5001/items');
+
+    let params
+    if(searchKeyword) {
+      params ={q:searchKeyword}
+    }
+
+    const response = await axios.get('http://localhost:5001/items', {params});
     return response.data;
   } catch (error) {
     throw new Error(error.response ? error.response.data : 'Network error');
@@ -22,7 +28,7 @@ const fetchItems = async () => {
  * 
  * @returns 
  */
-export const useItems = () => {
-  return useQuery('items', fetchItems);
+export const useItems = (searchKeyword) => {
+  return useQuery('items', () => fetchItems(searchKeyword));
 };
 
