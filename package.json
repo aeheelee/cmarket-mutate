@@ -16,7 +16,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest src/index.test.js --verbose",
+    "test": "cp ./json_server/db_init.json ./json_server/db.json && jest src/index.test.js --verbose",
     "eject": "react-scripts eject",
     "report": "jest src/index.test.js --verbose --json --outputFile=report.jest.json",
     "submit": "codestates",
