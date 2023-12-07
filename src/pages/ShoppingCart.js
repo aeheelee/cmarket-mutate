@@ -23,7 +23,7 @@ export default function ShoppingCart() {
   const updateCartItemsMutation = useUpdateCartItem();
   const deleteCartItemsMutation = useDeleteCartItem(); 
 
-  const [checkedItems, setCheckedItems] = useState('');
+  const [checkedItems, setCheckedItems] = useState([]);
 
   useEffect(() => {
     if (!isLoadingCartItems && !isErrorCartItems) {
