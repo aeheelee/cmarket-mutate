@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
-import Item from "../components/Item";
-import SearchBar from "../components/SearchBar";
+import Item from '../components/Item';
+import SearchBar from '../components/SearchBar';
 
-import { useItems } from "../query/Items"; // useItems 훅을 임포트합니다.
-import { useCartItems, useAddCartItem } from "../query/CartItems"; // useItems 훅을 임포트합니다.
-import { useSetToast } from "../query/Toast"; // useItems 훅을 임포트합니다.
+import { useItems } from '../query/Items'; // useItems 훅을 임포트합니다.
+import { useCartItems, useAddCartItem } from '../query/CartItems'; // useItems 훅을 임포트합니다.
+import { useSetToast } from '../query/Toast'; // useItems 훅을 임포트합니다.
 
 function ItemListContainer() {
   const addCartItemsMutation = useAddCartItem();
@@ -31,25 +31,31 @@ function ItemListContainer() {
   const handleClick = (item) => {
     if (!cartItems.map((el) => el.itemId).includes(item.id)) {
       //TODO: mutate 함수를 호출하여 아이템 추가에 대한 액션을 전달하세요.
+      addCartItemsMutation.mutate({
+        itemId: item.id,
+        quantity: 1,
+        id: item.id,
+      });
+
       setToastMutation.mutate({
         message: `장바구니에 ${item.name}이(가) 추가되었습니다.`,
-        type: "info",
+        type: 'info',
       });
     } else {
       setToastMutation.mutate({
         message: `이미 추가된 상품입니다.`,
-        type: "warning",
+        type: 'warning',
       });
     }
   };
 
-  useEffect( () => {
-    refetchItems()
-  }, [searchKeyword, refetchItems])
+  useEffect(() => {
+    refetchItems();
+  }, [searchKeyword, refetchItems]);
 
   const searchClick = (keyword) => {
-    setSearchKeyword(keyword)
-  }
+    setSearchKeyword(keyword);
+  };
 
   if (isLoadingItems || isLoadingCartItems) return <p>Loading...</p>;
   if (isErrorItems || isErrorCartItems) {
@@ -58,13 +64,13 @@ function ItemListContainer() {
         <p>Error...</p>
         {isErrorItems && (
           <p>
-            {errorItems.message || "An error occurred while fetching items."}
+            {errorItems.message || 'An error occurred while fetching items.'}
           </p>
         )}
         {isErrorCartItems && (
           <p>
             {errorCartItems.message ||
-              "An error occurred while fetching cart items."}
+              'An error occurred while fetching cart items.'}
           </p>
         )}
       </div>
@@ -74,9 +80,7 @@ function ItemListContainer() {
   return (
     <div>
       <div id="search-container">
-        <SearchBar
-          onSearch={searchClick}
-        />
+        <SearchBar onSearch={searchClick} />
       </div>
       <div id="item-list-container">
         <div id="item-list-body">
